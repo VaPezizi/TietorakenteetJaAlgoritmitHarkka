@@ -2,14 +2,23 @@ import java.util.*;
 
 public class SimpleSortTest {
 
-    static void quickSort(int[] arr, int lo, int hi)
+    static void quickSort(int[] arr)
     {
+        int lo = 0, hi = arr.length;
+        int i = lo, j = hi; 
+        int pivot = arr[(hi - lo) / 2];
+
+        do{
+            while(arr[i] < pivot)i++;
+            while(arr[j] < pivot)j--;
+        }
+
 
     }
 
     static void quickSortTest(int[] arr)
     {
-        quickSort(arr, 0, arr.length-1);
+        quickSort(arr);
     }
 
     private interface FunctionPointer {
@@ -23,6 +32,8 @@ public class SimpleSortTest {
         func.methodSignature(arr);
         long end1 = System.nanoTime();
         double kesto = (end1 - start1) / 1000000.0f;
+
+        System.out.println(methodName + kesto + " ms");
 
         printArray(arr);
     }
@@ -147,43 +158,13 @@ public class SimpleSortTest {
     public static void main(String[] args){
 
         int N = 10000;
-
-        int[] arr = createRandomArray(N);
-        long selectionStart = System.nanoTime();
-        selectionSort(arr);
-        long selectionEnd = System.nanoTime();
-        double duration = (selectionEnd - selectionStart) / 1000000.0f;
-        System.out.println("Selection sort : " + duration + " ms");
-
-        int[] arr2 = createRandomArray(N);
-        long insertionStart = System.nanoTime();
-        insertionSort(arr2);
-        long insertionEnd = System.nanoTime();
-        double duration2 = (insertionEnd - insertionStart) / 1000000.0f;
-        System.out.println("Insertion sort : " + duration2 + " ms");        
-
-        int[] arr3 = createRandomArray(N);
-        long bubbleStart = System.nanoTime();
-        bubbleSort(arr3);
-        long bubbleEnd = System.nanoTime();
-        double bubbleDuration = (bubbleEnd - bubbleStart) / 1000000.0f;
-        System.out.println("Bubble sort: " + bubbleDuration + " ms");
-
-        int[] arr4 = createRandomArray(N);
-        long arrayStart = System.nanoTime();
-        Arrays.sort(arr4);
-        long arrayEnd = System.nanoTime();
-        double arrayDuration = (arrayEnd - arrayStart) / 1000000.0f;
-        System.out.println("Arrays.sort : " + arrayDuration + " ms");
-
-        int[] arr5 = createRandomArray(N);
-        long shellStart = System.nanoTime();
-        shellSort(arr5);
-        long shellEnd = System.nanoTime();
-        double shellDuration = (shellEnd - shellStart) / 1000000.0f;
-        System.out.println("Shell sort: " + shellDuration + " ms");
-        printArray(arr5);
-
+        /* 
+        */
+        FunctionPointer quickSort = SimpleSortTest::quickSortTest;
+        FunctionPointer bubbleSort = SimpleSortTest::bubbleSort;
+        FunctionPointer shellSort = SimpleSortTest::shellSort;
+        FunctionPointer selectionSort = SimpleSortTest::selectionSort;
+        FunctionPointer insertionSort = SimpleSortTest::insertionSort;
         //System.out.print("Original array: ");
         printArray(createAscendingArray(10));
         printArray(createDescendingArray(10));
