@@ -12,11 +12,16 @@ public class SimpleSortTest {
         quickSort(arr, 0, arr.length-1);
     }
     static void bubbleSort(int[] arr){
-	for(int i = 0; i < arr.length - 1;++i){
-		if(arr[i + 1] > arr[i]){
-			
-		}	
-	}
+        int swaps = 0;
+        for(int i = 0; i < arr.length - 1;++i){
+            if(arr[i + 1] < arr[i]){
+                int temp = arr[i + 1];
+                arr[i + 1] = arr[i];
+                arr[i] = temp;			
+                swaps++;
+            }	
+        }
+        if(swaps > 0) bubbleSort(arr);
     }
 
     // https://www.geeksforgeeks.org/insertion-sort-algorithm/
@@ -101,6 +106,9 @@ public class SimpleSortTest {
         double duration2 = (insertionEnd - insertionStart) / 1000000.0;
         System.out.println("Insertion sort : " + duration2 + " ms");        
 
+        int[] arr3 = createRandomArray(100);
+        bubbleSort(arr3);
+        printArray(arr3);
         //System.out.print("Original array: ");
         //printArray(arr);
 
