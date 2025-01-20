@@ -2,23 +2,31 @@ import java.util.*;
 
 public class SimpleSortTest {
 
-    static void quickSort(int[] arr)
-    {
-        int lo = 0, hi = arr.length;
-        int i = lo, j = hi; 
-        int pivot = arr[(hi - lo) / 2];
-
+    static void quickSort(int[] arr, int lo, int hi)
+    { 
+        int i = lo, j = hi, h; 
+        int pivot = arr[(lo + hi) / 2];
+        
         do{
             while(arr[i] < pivot)i++;
-            while(arr[j] < pivot)j--;
-        }
+            while(arr[j] > pivot)j--;
+            if(i<=j){
+                h = arr[i];
+                arr[i] = arr[j];
+                arr[j] = h;
+                i++;
+                j--;
+            }
+        }while(i <= j);
+        if(lo < j) quickSort(arr, lo, j);
+        if(i < hi) quickSort(arr, i, hi);
 
 
     }
 
     static void quickSortTest(int[] arr)
     {
-        quickSort(arr);
+        quickSort(arr, 0, arr.length - 1);
     }
 
     private interface FunctionPointer {
@@ -27,15 +35,33 @@ public class SimpleSortTest {
     
     public static void SortMethodTester(FunctionPointer func, String methodName, int n){
         int[] arr = createRandomArray(n);
+        int[] ascArr = createAscendingArray(n);
+        int[] desArr = createDescendingArray(n);
 
         long start1 = System.nanoTime();
         func.methodSignature(arr);
         long end1 = System.nanoTime();
         double kesto = (end1 - start1) / 1000000.0f;
 
-        System.out.println(methodName + kesto + " ms");
+        System.out.println("Random array: " + methodName + " " + kesto + " ms");
+
+        start1 = System.nanoTime();
+        func.methodSignature(ascArr);
+        end1 = System.nanoTime();
+        kesto = (end1 - start1) / 1000000.0f;
+
+        System.out.println("Ascending array: " + methodName  + " " + kesto + " ms");
+
+        start1 = System.nanoTime();
+        func.methodSignature(desArr);
+        end1 = System.nanoTime();
+        kesto = (end1 - start1) / 1000000.0f;
+
+        System.out.println("Descending array: " + methodName  + " " + kesto + " ms");
 
         printArray(arr);
+
+
     }
 
     static void bubbleSort(int[] arr){
@@ -62,10 +88,11 @@ public class SimpleSortTest {
                 
                 int temp = arr[i];
 
-                for(int j = i; j>=gap && arr[j - gap] > temp; j-=gap){
+                int j;
+                for(j = i; j>=gap && arr[j - gap] > temp; j-=gap){
                     arr[j] = arr[j - gap];
                 }
-                arr[i] = temp;
+                arr[j] = temp;
                 
             }
         }
@@ -157,7 +184,7 @@ public class SimpleSortTest {
   
     public static void main(String[] args){
 
-        int N = 10000;
+        int N = 1000;
         /* 
         */
         FunctionPointer quickSort = SimpleSortTest::quickSortTest;
@@ -166,8 +193,12 @@ public class SimpleSortTest {
         FunctionPointer selectionSort = SimpleSortTest::selectionSort;
         FunctionPointer insertionSort = SimpleSortTest::insertionSort;
         //System.out.print("Original array: ");
-        printArray(createAscendingArray(10));
-        printArray(createDescendingArray(10));
+
+        SortMethodTester(quickSort, "Quick sort", N);
+        SortMethodTester(bubbleSort, "Bubble sort", N);
+        SortMethodTester(shellSort, "Shell sort", N);
+        SortMethodTester(selectionSort, "Selection sort", N);
+        SortMethodTester(insertionSort, "Insertion sort", N);
         //printArray(arr);
 
         //System.out.print("Sorted array: ");
