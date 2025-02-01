@@ -2,25 +2,85 @@ import java.util.*;
 
 public class SimpleSortTest {
 
+    private static void merge(int[] arr, int l, int m, int r){
+        int lArrSize = m - l + 1;   //Vasemman puolisen listan koko
+        int rArrSize = r - m;       //Oikean listan koko
+
+        int lArr[] = new int[lArrSize]; //Oikea ja vasen lista
+        int rArr[] = new int[rArrSize];
+        
+        for(int i = 0;i<lArrSize;i++){  //Kopioidaan arvoja
+            lArr[i] = arr[l + i];
+        }
+        for(int i = 0;i<rArrSize;i++){  //Sama homma tässä
+            rArr[i] = arr[m + 1 + i];
+        }
+        int i = 0, j = 0;   //Indeksit oikealle ja vasemmalle listalle
+
+        int k = l;      //Indeksi lopulliselle listalle
+        while(i < lArrSize && j < rArrSize){    
+            if(lArr[i] <= rArr[j]){     //Verrataan vasemman listan alkiota oikean listan alkioon
+                arr[k] = lArr[i];       //k indeksi nousee jokaisella loopilla ja sisältää indeksin "pää listassa"
+                i++;
+            }
+            else{
+                arr[k] = rArr[j];       //Jos vasemmasta listasta ei löydy pienempää, niin otetaan oikeasta
+                j++;
+            }
+            k++;
+        }
+        while(i < lArrSize){    //Jos ylemmässä loopissa jäi vasempaan listaan alkioita
+            arr[k] = lArr[i];
+            i++;
+            k++;
+        }
+
+        while(j < rArrSize){
+            arr[k] = rArr[j];
+            j++;
+            k++;
+        }
+    }
+
+    static void merge_Sort(int[] arr, int lo, int hi){   //lo = vasen indexi, josta aloitetaan, hi = oikea indeksi
+        if(hi - lo + 1 <= 50){
+            insertionSort(arr);
+            return;
+        }
+        if(lo < hi){   
+            //int m = (lo + hi) / 2;  //Otetaan keski indeksi
+            int m = lo + (hi-lo) / 2;
+            merge_Sort(arr, lo, m); //Rekursio listan vasemman puolen paloitteluun
+            merge_Sort(arr, m + 1, hi); //Sama oikealle
+
+            merge(arr, lo, m, hi);      //Yhdistys
+        } 
+    }
+    static void mergeSort(int[] arr){
+       merge_Sort(arr, 0, arr.length - 1); 
+    }
+
+
     static void quickSort(int[] arr, int lo, int hi)
     { 
         int i = lo, j = hi, h; 
-        int pivot = arr[(lo + hi) / 2];
+        int pivot = arr[(lo + hi) / 2]; //Valitaan pivotiksi keskimmäinen alkio
         
         do{
-            while(arr[i] < pivot)i++;
-            while(arr[j] > pivot)j--;
-            if(i<=j){
+            while(arr[i] < pivot)i++;   //Etsitään oikealta alkio, joka on pivottia suurempi
+            while(arr[j] > pivot)j--;   //Sama vasemmalle puolelle
+            if(i<=j){   //Vaihdetaan alkioiden paikkaa
                 h = arr[i];
                 arr[i] = arr[j];
                 arr[j] = h;
                 i++;
                 j--;
             }
-        }while(i <= j);
+        }while(i <= j); //Jatketaan kunnes lista käyty läpi
+
+        //Rekursio oikealle ja vasemmalle puolelle listaa
         if(lo < j) quickSort(arr, lo, j);
         if(i < hi) quickSort(arr, i, hi);
-
 
     }
 
@@ -59,8 +119,7 @@ public class SimpleSortTest {
 
         System.out.println("Descending array: " + methodName  + " " + kesto + " ms");
 
-        printArray(arr);
-
+        //printArray(arr);
 
     }
 
@@ -184,7 +243,7 @@ public class SimpleSortTest {
   
     public static void main(String[] args){
 
-        int N = 1000;
+        int N = 500000;
         /* 
         */
         FunctionPointer quickSort = SimpleSortTest::quickSortTest;
@@ -192,14 +251,17 @@ public class SimpleSortTest {
         FunctionPointer shellSort = SimpleSortTest::shellSort;
         FunctionPointer selectionSort = SimpleSortTest::selectionSort;
         FunctionPointer insertionSort = SimpleSortTest::insertionSort;
+        FunctionPointer arraysSort = Arrays::sort;
+        FunctionPointer mergeSort = SimpleSortTest::mergeSort;
         //System.out.print("Original array: ");
-
+        /* 
         SortMethodTester(quickSort, "Quick sort", N);
         SortMethodTester(bubbleSort, "Bubble sort", N);
         SortMethodTester(shellSort, "Shell sort", N);
         SortMethodTester(selectionSort, "Selection sort", N);
-        SortMethodTester(insertionSort, "Insertion sort", N);
-        //printArray(arr);
+        SortMethodTester(insertionSort, "Insertion sort", N);*/
+        SortMethodTester(mergeSort, "Merge sort", N);
+        
 
         //System.out.print("Sorted array: ");
         //printArray(arr);
