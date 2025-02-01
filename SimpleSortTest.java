@@ -1,6 +1,7 @@
 import java.util.*;
 
 public class SimpleSortTest {
+    
 
     private static void merge(int[] arr, int l, int m, int r){
         int lArrSize = m - l + 1;   //Vasemman puolisen listan koko
@@ -42,8 +43,9 @@ public class SimpleSortTest {
         }
     }
 
+
     static void merge_Sort(int[] arr, int lo, int hi){   //lo = vasen indexi, josta aloitetaan, hi = oikea indeksi
-        if(hi - lo + 1 <= 50){
+        if(hi - lo + 1 <= 16){
             insertionSort(arr);
             return;
         }
@@ -120,7 +122,7 @@ public class SimpleSortTest {
         System.out.println("Descending array: " + methodName  + " " + kesto + " ms");
 
         //printArray(arr);
-
+        //printEveryTenth(arr);
     }
 
     static void bubbleSort(int[] arr){
@@ -212,6 +214,12 @@ public class SimpleSortTest {
         }
         System.out.println();
     }
+    static void printEveryTenth(int[] arr){
+        for(int i = 0; i < arr.length -1; i+=10){
+            System.out.print(arr[i] + " | ");
+        }
+        System.out.println();
+    }
 
     static int[] createAscendingArray(int n){
         int arr[] = new int[n];
@@ -243,7 +251,7 @@ public class SimpleSortTest {
   
     public static void main(String[] args){
 
-        int N = 500000;
+        int N = 10000;
         /* 
         */
         FunctionPointer quickSort = SimpleSortTest::quickSortTest;
@@ -254,12 +262,13 @@ public class SimpleSortTest {
         FunctionPointer arraysSort = Arrays::sort;
         FunctionPointer mergeSort = SimpleSortTest::mergeSort;
         //System.out.print("Original array: ");
-        /* 
+        
         SortMethodTester(quickSort, "Quick sort", N);
         SortMethodTester(bubbleSort, "Bubble sort", N);
         SortMethodTester(shellSort, "Shell sort", N);
         SortMethodTester(selectionSort, "Selection sort", N);
-        SortMethodTester(insertionSort, "Insertion sort", N);*/
+        SortMethodTester(insertionSort, "Insertion sort", N);
+        SortMethodTester(arraysSort, "Arrays.sort", N);
         SortMethodTester(mergeSort, "Merge sort", N);
         
 
