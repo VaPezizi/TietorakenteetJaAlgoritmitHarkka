@@ -2,66 +2,96 @@ import java.util.*;
 
 public class SimpleSortTest {
     
-
-    private static void merge(int[] arr, int l, int m, int r){
-        int lArrSize = m - l + 1;   //Vasemman puolisen listan koko
-        int rArrSize = r - m;       //Oikean listan koko
-
-        int lArr[] = new int[lArrSize]; //Oikea ja vasen lista
-        int rArr[] = new int[rArrSize];
-        
-        for(int i = 0;i<lArrSize;i++){  //Kopioidaan arvoja
-            lArr[i] = arr[l + i];
-        }
-        for(int i = 0;i<rArrSize;i++){  //Sama homma tässä
-            rArr[i] = arr[m + 1 + i];
-        }
-        int i = 0, j = 0;   //Indeksit oikealle ja vasemmalle listalle
-
-        int k = l;      //Indeksi lopulliselle listalle
-        while(i < lArrSize && j < rArrSize){    
-            if(lArr[i] <= rArr[j]){     //Verrataan vasemman listan alkiota oikean listan alkioon
-                arr[k] = lArr[i];       //k indeksi nousee jokaisella loopilla ja sisältää indeksin "pää listassa"
-                i++;
-            }
-            else{
-                arr[k] = rArr[j];       //Jos vasemmasta listasta ei löydy pienempää, niin otetaan oikeasta
-                j++;
-            }
-            k++;
-        }
-        while(i < lArrSize){    //Jos ylemmässä loopissa jäi vasempaan listaan alkioita
-            arr[k] = lArr[i];
-            i++;
-            k++;
-        }
-
-        while(j < rArrSize){
-            arr[k] = rArr[j];
-            j++;
-            k++;
-        }
-    }
-
-
-    static void merge_Sort(int[] arr, int lo, int hi){   //lo = vasen indexi, josta aloitetaan, hi = oikea indeksi
-        if(hi - lo + 1 <= 16){
-            insertionSort(arr);
+    //Uusi versio merge sortista, kirjoittanut Thomas H. Cormen
+    public static void mergeSort(int[] arreglo, int lo, int hi) {
+        if(hi - lo +1 <= 30){
+            insertionSort(arreglo, lo, hi);
             return;
         }
-        if(lo < hi){   
-            //int m = (lo + hi) / 2;  //Otetaan keski indeksi
-            int m = lo + (hi-lo) / 2;
-            merge_Sort(arr, lo, m); //Rekursio listan vasemman puolen paloitteluun
-            merge_Sort(arr, m + 1, hi); //Sama oikealle
-
-            merge(arr, lo, m, hi);      //Yhdistys
-        } 
+        // Perusehto: Jos alitaulukon koko on 1 tai vähemmän, lopetetaan rekursio.
+        if (lo < hi) {
+            // Lasketaan taulukon keskikohta
+            int m = ((lo + hi) / 2);
+            
+            // Rekursiivisesti järjestetään vasen ja oikea puolisko
+            mergeSort(arreglo, lo, m);
+            mergeSort(arreglo, m + 1, hi);
+            
+            // Yhdistetään järjestetyt osat
+            merge(arreglo, lo, m, hi);
+        }
     }
-    static void mergeSort(int[] arr){
-       merge_Sort(arr, 0, arr.length - 1); 
+
+    public static void merge(int[] arreglo, int lo, int m, int hi) {
+        // Lasketaan alitaulukoiden koot
+        int n1 = (m - lo) + 1;
+        int n2 = (hi - m);
+
+        // Luodaan kaksi uutta väliaikaista taulukkoa
+        int[] mitad1 = new int[n1 + 1]; // Ensimmäinen puolisko + ylimääräinen paikka
+        int[] mitad2 = new int[n2 + 1]; // Toinen puolisko + ylimääräinen paikka
+
+        // Kopioidaan tiedot ensimmäiseen alitaulukkoon
+        for (int v = 0; v < n1; v++) {
+            mitad1[v] = arreglo[lo + v];
+        }
+
+        // Kopioidaan tiedot toiseen alitaulukkoon
+        for (int p = 0; p < n2; p++) {
+            mitad2[p] = arreglo[p + m + 1];
+        }
+
+        // Käytetään Integer.MAX_VALUE merkkinä, että taulukon loppu on saavutettu
+        mitad1[n1] = Integer.MAX_VALUE;
+        mitad2[n2] = Integer.MAX_VALUE;
+
+        // Yhdistetään kaksi alitaulukkoa takaisin alkuperäiseen taulukkoon
+        for (int r = lo, m1 = 0, m2 = 0; r <= hi; r++) {
+            if (mitad1[m1] <= mitad2[m2]) {
+                arreglo[r] = mitad1[m1];
+                m1++;
+            } else {
+                arreglo[r] = mitad2[m2];
+                m2++;
+            }
+        }
     }
 
+    // Tämä metodi toimii päämetodina, joka käynnistää merge sortin koko taulukolle
+    public static void mergeSort(int[] arr){
+        mergeSort(arr, 0, arr.length -1);
+    }
+
+    //Uusi versio insertion Sortista, joka ottaa listan rajat parametriksi
+    public static void insertionSort(int[] arr, int lo, int hi) {
+        for (int i = lo + 1; i <= hi; i++) {
+            int key = arr[i];
+            int j = i - 1;
+            while (j >= lo && arr[j] > key) {
+                arr[j + 1] = arr[j];
+                j--;
+            }
+            arr[j + 1] = key;
+        }
+    }
+     // https://www.geeksforgeeks.org/insertion-sort-algorithm/
+    static void insertionSort(int arr[])
+    {
+        int n = arr.length;
+        for (int i = 1; i < n; ++i) {
+            int key = arr[i];
+            int j = i - 1;
+
+            /* Move elements of arr[0..i-1], that are
+               greater than key, to one position ahead
+               of their current position */
+            while (j >= 0 && arr[j] > key) {
+                arr[j + 1] = arr[j];
+                j = j - 1;
+            }
+            arr[j + 1] = key;
+        }
+    }
 
     static void quickSort(int[] arr, int lo, int hi)
     { 
@@ -160,25 +190,6 @@ public class SimpleSortTest {
 
     }
 
-    // https://www.geeksforgeeks.org/insertion-sort-algorithm/
-    static void insertionSort(int arr[])
-    {
-        int n = arr.length;
-        for (int i = 1; i < n; ++i) {
-            int key = arr[i];
-            int j = i - 1;
-
-            /* Move elements of arr[0..i-1], that are
-               greater than key, to one position ahead
-               of their current position */
-            while (j >= 0 && arr[j] > key) {
-                arr[j + 1] = arr[j];
-                j = j - 1;
-            }
-            arr[j + 1] = key;
-        }
-    }
-
     // kopioi koodi täältä
     // https://www.geeksforgeeks.org/selection-sort/     
     static void selectionSort(int[] arr){
@@ -251,24 +262,24 @@ public class SimpleSortTest {
   
     public static void main(String[] args){
 
-        int N = 10000;
+        int N = 500000;
         /* 
-        */
+        
         FunctionPointer quickSort = SimpleSortTest::quickSortTest;
         FunctionPointer bubbleSort = SimpleSortTest::bubbleSort;
         FunctionPointer shellSort = SimpleSortTest::shellSort;
         FunctionPointer selectionSort = SimpleSortTest::selectionSort;
         FunctionPointer insertionSort = SimpleSortTest::insertionSort;
-        FunctionPointer arraysSort = Arrays::sort;
+        FunctionPointer arraysSort = Arrays::sort;*/
         FunctionPointer mergeSort = SimpleSortTest::mergeSort;
         //System.out.print("Original array: ");
         
-        SortMethodTester(quickSort, "Quick sort", N);
+        /*SortMethodTester(quickSort, "Quick sort", N);
         SortMethodTester(bubbleSort, "Bubble sort", N);
         SortMethodTester(shellSort, "Shell sort", N);
         SortMethodTester(selectionSort, "Selection sort", N);
         SortMethodTester(insertionSort, "Insertion sort", N);
-        SortMethodTester(arraysSort, "Arrays.sort", N);
+        SortMethodTester(arraysSort, "Arrays.sort", N);*/
         SortMethodTester(mergeSort, "Merge sort", N);
         
 
